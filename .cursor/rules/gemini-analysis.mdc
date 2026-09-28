@@ -1,0 +1,112 @@
+---
+description: Guidelines for implementing Gemini-powered documentation analysis, structured findings, prompts, and agent behavior
+alwaysApply: false
+---
+
+# Gemini Documentation Analysis
+
+Gemini is the reasoning engine for Archbee Sidekick.
+
+## General principle
+
+Gemini should analyze documentation rather than simply rewrite it.
+
+The application should prioritize:
+
+1. evidence
+2. reasoning
+3. uncertainty
+4. actionable findings
+
+over fluent prose.
+
+## Structured output
+
+Prefer strongly typed structured Gemini responses.
+
+Do not make application logic depend on parsing arbitrary prose from Gemini.
+
+Validate model output before it enters the application.
+
+Invalid or incomplete model output must produce a controlled error rather than silently producing a malformed finding.
+
+## Findings
+
+A finding should normally contain:
+
+- type
+- severity
+- confidence
+- affected document
+- description
+- evidence
+- suggested action
+
+When applicable, also include:
+
+- related documents
+- style-guide reference
+- proposed change
+
+## Confidence
+
+Confidence describes confidence that the finding is valid.
+
+It is not a measure of documentation quality.
+
+Do not convert confidence into a score or ranking of the documentation.
+
+## Style guide
+
+The user's Markdown style guide is authoritative for style assessment.
+
+Do not replace explicit user style-guide rules with generic model preferences.
+
+Do not report a style-guide violation unless the finding can be connected to an actual rule or section of the supplied style guide.
+
+Clearly distinguish:
+
+- style-guide violation
+- general documentation-quality observation
+
+## Uncertainty
+
+If the available evidence is insufficient, say so.
+
+Prefer:
+
+"These documents may describe the same concept."
+
+over:
+
+"These documents describe the same concept."
+
+unless the evidence supports the stronger statement.
+
+## Context selection
+
+Do not automatically send the entire documentation corpus to Gemini for every analysis.
+
+Retrieve/select relevant context where practical.
+
+Keep document identity and provenance attached to the context sent to the model.
+
+## Prompts
+
+Prompts should explain:
+
+- the task
+- available evidence
+- expected output schema
+- constraints
+- uncertainty requirements
+
+Do not rely on a single vague instruction such as "analyze these documents."
+
+## Human review
+
+Gemini may recommend a change.
+
+Gemini must not be treated as having authority to apply that change.
+
+The application controls whether proposed changes are sent to Archbee.

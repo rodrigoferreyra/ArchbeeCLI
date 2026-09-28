@@ -1,0 +1,83 @@
+---
+description: Archbee Public API integration conventions for Archbee Sidekick
+alwaysApply: false
+---
+
+# Archbee API
+
+Archbee Sidekick integrates with the Archbee Public API.
+
+## Source of truth
+
+Before implementing or modifying an Archbee API integration:
+
+- inspect the current official Archbee API documentation
+- verify the endpoint
+- verify authentication
+- verify request format
+- verify response format
+- verify relevant limitations
+
+Never infer an endpoint from an outdated example or from an LLM-generated assumption.
+
+## Client isolation
+
+All Archbee HTTP operations should go through the Archbee client layer.
+
+CLI commands, analysis modules, and review UI should not make raw Archbee HTTP requests.
+
+## Document identity
+
+Always preserve the Archbee document ID.
+
+Where available, also preserve:
+
+- document title
+- URL
+- Space ID
+- relevant metadata
+- retrieved/updated timestamps
+
+## Read operations
+
+Reading and synchronization should be safe to repeat.
+
+Prefer idempotent local synchronization.
+
+The local snapshot should retain enough provenance to identify where a finding originated.
+
+## Write operations
+
+Writing to Archbee is a separate operation from analysis.
+
+Never perform a write as a side effect of:
+
+- pull
+- analyze
+- review
+- search
+- finding generation
+
+A write must occur only after explicit user approval.
+
+## Destructive operations
+
+Do not implement automatic deletion.
+
+Do not perform destructive bulk operations.
+
+If a future feature requires deletion, require an explicit confirmation that identifies the affected documents.
+
+## API failures
+
+Handle:
+
+- authentication errors
+- authorization errors
+- not-found responses
+- validation errors
+- rate limits
+- network failures
+- unexpected response formats
+
+Expose actionable errors without leaking credentials.

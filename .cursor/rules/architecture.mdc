@@ -1,0 +1,102 @@
+---
+description: Core architecture and engineering principles for Archbee Sidekick
+alwaysApply: true
+---
+
+# Archbee Sidekick — Architecture
+
+## Product boundary
+
+Archbee Sidekick is a local-first CLI companion for Archbee documentation.
+
+It is not a documentation platform and must not reproduce Archbee functionality unnecessarily.
+
+Archbee is the source of truth for published documentation.
+
+## Core architecture
+
+Keep these concerns separate:
+
+- CLI/presentation
+- configuration
+- Archbee API client
+- local document storage/index
+- Gemini client
+- analysis logic
+- findings
+- proposed changes
+- Archbee write operations
+
+Do not put API calls directly in CLI commands.
+
+Do not put Gemini prompts directly in CLI commands.
+
+Do not couple analysis logic to terminal presentation.
+
+## Read / analyze / write separation
+
+The application follows:
+
+READ → ANALYZE → PROPOSE → REVIEW → WRITE
+
+Analysis must never implicitly modify Archbee.
+
+Any Archbee write operation requires explicit user approval.
+
+Do not implement autonomous document modification.
+
+## Evidence-first analysis
+
+AI-generated findings must be supported by evidence from the source documentation.
+
+Prefer:
+
+- document IDs
+- document titles
+- sections/headings
+- relevant excerpts
+- related documents
+- style-guide references
+
+over unsupported model assertions.
+
+## Conservative behavior
+
+The system should be aggressive about identifying potential issues but conservative about claiming certainty.
+
+Distinguish:
+
+- observation
+- potential issue
+- confirmed issue
+- suggested action
+
+Do not silently turn uncertainty into fact.
+
+## External APIs
+
+Never invent Archbee or Gemini API endpoints.
+
+Before implementing an integration, inspect the current official API documentation.
+
+Keep external API clients behind abstractions so API changes do not affect the rest of the application.
+
+## Secrets
+
+Never hard-code API keys.
+
+Never log API keys.
+
+Never send credentials to Gemini.
+
+Do not include credentials in findings, exceptions, test fixtures, or committed files.
+
+## Implementation style
+
+Prefer simple, boring solutions.
+
+Do not introduce frameworks, abstractions, or infrastructure without a concrete requirement.
+
+Avoid speculative implementation of future features.
+
+Build the smallest working version first.
